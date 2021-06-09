@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
+    <title>ArcGIS API for JavaScript</title>
+
+    <!-- ArcgGIS API -->
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.19/esri/themes/light/main.css"
+    />
+    <script src="https://js.arcgis.com/4.19/"></script>
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="styles/style.css" />
+
+    <!-- JS -->
+    <script src="js/index.js"></script>
+  </head>
+  <body>
+    <div id="viewDiv"></div>
+    <div id="tableContainer">
+      <div id="tableDiv"></div>
+    </div>
+    <div id="actions" class="esri-widget">
+      <button id="zoom" class="esri-button">Zoom to selected trail(s)</button>
+      <button id="fullextent" class="esri-button">Full extent</button>
+    </div>
+    <div id="toggleDiv" class="esri-widget">
+      <label class="switch">
+        <input id="checkboxId" type="checkbox" checked="yes" />
+        <span class="slider round"></span>
+      </label>
+      <label class="labelText" id="labelText">Hide feature table</label>
+    </div>
+  </body>
+</html>
