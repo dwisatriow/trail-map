@@ -126,7 +126,6 @@ require([
         feature: feature,
       });
     });
-    console.log(features);
   });
 
   // Filter table when view extent change
