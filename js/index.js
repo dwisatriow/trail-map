@@ -1,3 +1,5 @@
+// const { parse } = require("json2csv");
+
 require([
   "esri/config",
   "esri/Map",
@@ -7,6 +9,8 @@ require([
   "esri/widgets/FeatureTable",
   "esri/core/watchUtils",
   "esri/widgets/BasemapToggle",
+  "esri/widgets/FeatureTable/Grid/support/ButtonMenuItem",
+  "https://cdn.jsdelivr.net/npm/json2csv@4.2.1",
 ], function (
   esriConfig,
   Map,
@@ -15,7 +19,9 @@ require([
   Search,
   FeatureTable,
   watchUtils,
-  BasemapToggle
+  BasemapToggle,
+  ButtonMenuItem,
+  json2csv
 ) {
   esriConfig.apiKey =
     "AAPKaef733abbfe34f2a91b9796c1cdc137eYJM_M9dzy84QG3ujb9Yz0hotBBB5yqyJLLfUDMO2U3jmr3c0ZNxhjc5FrZMFU_qO";
@@ -69,6 +75,28 @@ require([
   const featureLayer = map.layers.getItemAt(0);
   featureLayer.title = "Trails in Mahou Riviera";
 
+  // Add menu button for featureTable
+  const exportAllButton = new ButtonMenuItem({
+    label: "Export Table to CSV",
+    iconClass: "Icon font name, if applicable",
+    clickFunction: function () {
+      // exportDataToCSV(tableData);
+    },
+  });
+
+  const exportSelectedButton = new ButtonMenuItem({
+    label: "Export Selected to CSV",
+    iconClass: "Icon font name, if applicable",
+    clickFunction: function () {
+      exportDataToCSV(
+        features.map((item) => Object.assign({}, item.feature.attributes))
+      );
+      // console.log(
+      //   features.map((item) => Object.assign({}, item.feature.attributes))
+      // );
+    },
+  });
+
   // Create the feature table
   const featureTable = new FeatureTable({
     layer: trailsLayer,
@@ -101,10 +129,10 @@ require([
       },
     ],
     container: "tableDiv",
+    menuConfig: {
+      items: [exportAllButton, exportSelectedButton],
+    },
   });
-
-  // Add buttons to the mapView
-  view.ui.add(document.getElementById("actions"), "top-right");
 
   // Listen for the table's selection-change event
   let features = [];
@@ -127,6 +155,29 @@ require([
       });
     });
   });
+
+  // Export featureTable data to CSV
+  function exportDataToCSV(data) {
+    const fields = [
+      "TRL_NAME",
+      "Minimum Elevation",
+      "Maximum Elevation",
+      "Elevation Gain",
+      "Length (ft)",
+      "Length (mi)",
+    ];
+    const opts = { fields };
+
+    try {
+      const csv = json2csv.parse(data, opts);
+      console.log(csv);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  // Add zoom and full extent buttons to the mapView
+  view.ui.add(document.getElementById("actions"), "top-right");
 
   // Filter table when view extent change
   featureLayer.watch("loaded", () => {
@@ -217,7 +268,6 @@ require([
   };
 
   function toggleFeatureTable() {
-    console.log(body);
     // Check if the table is displayed, if so, toggle off. If not, display.
     if (!checkboxEle.checked) {
       body.removeChild(tableContainer);
